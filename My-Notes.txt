@@ -1,0 +1,25 @@
+PUP'S JOURNAL — MY NOTES
+========================
+
+This is my own space to write notes, ideas, questions, and things I want to remember.
+
+To edit on GitHub: open this file, tap the pencil (Edit), type your notes, then commit your changes.
+
+REMINDER: This repository is PUBLIC. Do not write passwords, private contact information, or anything you want to keep confidential here.
+
+MY NOTES
+--------
+
+Date:
+Topic:
+Notes:
+
+
+IDEAS FOR LATER
+---------------
+
+
+QUESTIONS I WANT TO ASK
+-----------------------
+
+
