@@ -23,3 +23,15 @@ QUESTIONS I WANT TO ASK
 -----------------------
 
 
+
+DEVELOPMENT JOURNAL — 2026-10-26
+--------------------------------
+Project: HappyFurrbabbies Angular website
+
+- PR #109 was merged. Angular build passed, but the secure backend GitHub Actions workflow reported invalid YAML at line 34.
+- Fix prepared in HappyFurrbabbies PR #110: corrected multiline commands in .github/workflows/secure-backend-checks.yml. Merge/check status not yet confirmed.
+- Treat dropdown on mobile expands into oversized stacked buttons. Planned: compact, colorful, phone-friendly menu that closes after selection; preserve all seven treat types and their counts.
+- Treats should be given by other community members, not by the author of a post. Owners should still see treats received.
+- Proposed separate author celebration reaction (working title: My Happy Dance!), not counted as community treats. Final label still to be decided.
+- Pet Parent photo selected from a phone did not display during an earlier test. A dog photo did display. Current behavior has not yet been retested; investigate owner photo preview and persistence without assuming dog photo upload is broken.
+
