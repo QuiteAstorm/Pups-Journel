@@ -49,3 +49,10 @@ Project: HappyFurrbabbies Angular website
 - Existing treat reactions and post data are still demo/session based, not production-grade persisted accounts.
 - Pet Parent photo upload/display issue remains to investigate; a dog photo previously displayed successfully.
 - Keep journaling meaningful development changes through reviewable PRs; no background automatic writes between conversations.
+
+DEVELOPMENT JOURNAL UPDATE — 2026-10-26 (PHOTO)
+------------------------------------------------
+- HappyFurrbabbies PR #111 was merged after checks passed, per user confirmation. The Angular number-pipe build error was corrected before merge.
+- Opened HappyFurrbabbies PR #112 to improve Pet Parent phone-gallery photo preview and keep a compressed copy in browser storage on the same device, with a visible status message.
+- PR #112 still requires passing checks, merge, and a real phone test. This is not cloud photo storage; cross-device persistence and secure accounts remain future work.
+- Existing dog-photo behavior intentionally left unchanged.
