@@ -16,6 +16,19 @@ figcaption{font-size:.96rem}
 pre,code{font-weight:600}
 pre{font-size:.95rem;line-height:1.5}
 .back-button{color:#102437;font-weight:800}
+
+/* Consistent high-contrast writing in every diary entry, topic card and article. */
+header p,main>details>p,.entry-list>details,.article-panel,.article-panel p,.article-panel li,.article-panel figcaption,.article-panel .note,.code-flow,footer{color:#101d30;font-weight:700}
+.entry-list>details>summary,main>details>summary{color:#0c1d35;font-weight:850;font-size:1.08rem;line-height:1.45}
+.article-panel p,.article-panel li,.article-panel figcaption{font-size:1.075rem;line-height:1.7}
+.article-panel h2,.article-panel h3{color:#091c35;font-weight:900;line-height:1.3}
+.article-panel figcaption{font-size:1rem}
+.article-panel pre,.article-panel pre code{color:#f4ffff;background:#19384d;font-size:1rem;font-weight:700;line-height:1.65}
+.article-panel :not(pre)>code{color:#10223e;background:#d5f7ff;font-weight:800;padding:1px 4px;border-radius:4px}
+.article-panel a{color:#182f91;font-weight:800;text-decoration-thickness:2px}
+header p{font-size:1.075rem;line-height:1.65}
+.scroll-hint{color:#23374c;font-weight:750}
+@media(max-width:480px){.article-panel{padding:15px}.article-panel p,.article-panel li{font-size:1.06rem}}
 </style></head><body><main><header><h1>🐶 Pup's Journal</h1><p>A colorful notebook for programming discoveries, diagrams, and little bits of code. Tap any section to open it!</p></header>
 <details open><summary>🌿 GitHub &amp; Branches</summary><p class="scroll-hint">↕ Scroll inside this section to browse entries</p><div class="entry-list" tabindex="0" role="region" aria-label="Scrollable journal topics"><details><summary>How we handled a merge conflict</summary><div class="article-panel"><button type="button" class="back-button" aria-label="Back to topics">← Back to Topics</button><h2 class="article-title">How we handled a merge conflict</h2><p>Two feature branches changed overlapping parts of a website. GitHub could not safely combine them on its own.</p><p>Instead of struggling with the older branch, we started a new branch from the updated main branch and carefully reapplied the intended feature. A fresh branch doesn't automatically solve conflicts: the changes still need to be combined thoughtfully.</p>
 <figure><svg viewBox="0 0 580 245" role="img" aria-label="Illustration showing an older conflicting branch and a new branch from updated main">
