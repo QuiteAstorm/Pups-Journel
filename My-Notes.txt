@@ -35,3 +35,17 @@ Project: HappyFurrbabbies Angular website
 - Proposed separate author celebration reaction (working title: My Happy Dance!), not counted as community treats. Final label still to be decided.
 - Pet Parent photo selected from a phone did not display during an earlier test. A dog photo did display. Current behavior has not yet been retested; investigate owner photo preview and persistence without assuming dog photo upload is broken.
 
+
+DEVELOPMENT JOURNAL UPDATE — 2026-10-26
+---------------------------------------
+Project: HappyFurrbabbies Angular website
+
+- User confirmed HappyFurrbabbies PR #110 and Pup's Journal PR #4 were merged. Build status after #110 was not independently confirmed.
+- HappyFurrbabbies PR #111 opened and updated; awaiting passing checks and merge.
+- Treat picker design: six emoji-only choices (bone, biscuit, bacon, steak, cheese, paw) in compact colorful buttons, with a visible numeric count below each emoji, including large totals such as 1,000.
+- Treat selection should close the picker. Authors should not give treats to their own posts; a demo-level guard and UI hiding were added across post views. Secure account-based enforcement remains future work.
+- Author-only "My Happy Dance!" celebration is separate from community treat counts.
+- Pet Parent page now has an animated happy-dog celebration banner displaying accumulated treats on their posts and dogs' posts. This is an on-page indicator, not a push notification or real-time cross-device alert. Respect reduced-motion settings.
+- Existing treat reactions and post data are still demo/session based, not production-grade persisted accounts.
+- Pet Parent photo upload/display issue remains to investigate; a dog photo previously displayed successfully.
+- Keep journaling meaningful development changes through reviewable PRs; no background automatic writes between conversations.
