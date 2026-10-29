@@ -1,8 +1,10 @@
 # Lesson 01 — HTML and CSS: A responsive navigation menu
 
-**Practice project:** Sunny Garden Club (fictional). **Level:** foundations refresher. **Time:** work at your own pace.
+**Practice project:** Foraging Forest (fictional). **Level:** foundations refresher. **Time:** work at your own pace.
 
 ## Goal
+
+**Safety note:** This is a web-development exercise, not an identification or edibility guide. Never eat wild plants or mushrooms based on a website, photo, or app alone; consult qualified local experts.
 
 Build a simple navigation bar that wraps cleanly on narrow screens. This lesson uses **only HTML and CSS**, so there is no installation, JavaScript, TypeScript, or Angular required.
 
@@ -31,7 +33,7 @@ Create a file called `index.html` and paste the complete example below. You can 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sunny Garden Club</title>
+  <title>Foraging Forest</title>
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; font-family: system-ui, sans-serif; color: #173421; }
@@ -57,19 +59,19 @@ Create a file called `index.html` and paste the complete example below. You can 
 </head>
 <body>
   <header class="site-header">
-    <h1>Sunny Garden Club</h1>
+    <h1>Foraging Forest</h1>
     <nav class="site-nav" aria-label="Main navigation">
-      <a href="#plants">Plants</a>
-      <a href="#events">Events</a>
-      <a href="#photos">Photos</a>
+      <a href="#plants">Woodland Plants</a>
+      <a href="#events">Forest Walks</a>
+      <a href="#photos">Field Notes</a>
       <a href="#about">About</a>
     </nav>
   </header>
   <main>
-    <h2 id="plants">Plants</h2><p>Welcome to our garden.</p>
-    <h2 id="events">Events</h2><p>Garden meetups coming soon.</p>
-    <h2 id="photos">Photos</h2><p>Photo gallery coming soon.</p>
-    <h2 id="about">About</h2><p>We love growing things.</p>
+    <h2 id="plants">Woodland Plants</h2><p>Explore woodland habitats and learn to identify plants responsibly.</p>
+    <h2 id="events">Forest Walks</h2><p>Forest walks coming soon.</p>
+    <h2 id="photos">Field Notes</h2><p>Field observations coming soon.</p>
+    <h2 id="about">About</h2><p>We learn about forests while respecting wildlife and local regulations.</p>
   </main>
 </body>
 </html>
