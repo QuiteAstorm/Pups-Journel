@@ -27,8 +27,21 @@ pre{font-size:.95rem;line-height:1.5}
 .carousel-controls button{background:#fff;border:2px solid #0e929e;border-radius:13px;color:#102437;font:inherit;font-weight:800;min-height:44px;padding:7px 13px}
 .carousel-count{font-weight:800;color:#102437;text-align:center}
 @media (prefers-reduced-motion:reduce){.entry-list{scroll-behavior:auto}}
+
+/* Main topic carousel: one whole section at a time, including its lesson carousel. */
+.topic-deck{display:flex;overflow-x:auto;overflow-y:hidden;gap:12px;scroll-snap-type:x mandatory;scrollbar-width:none;touch-action:pan-x;align-items:flex-start;padding:8px 3px 16px}
+.topic-deck::-webkit-scrollbar{display:none}
+.topic-deck>details{flex:0 0 100%;min-width:0;margin:0;scroll-snap-align:start}
+.topic-deck>details>summary{min-height:54px}
+.topic-deck>details:not([open]){align-self:stretch}
+.topic-deck:focus-visible{outline:3px solid #087c90}
+.topic-controls{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:16px 2px 6px}
+.topic-controls button{font:inherit;font-weight:800;color:#102437;background:white;border:2px solid #0e929e;border-radius:13px;min-height:48px;padding:8px 12px}
+.topic-controls button:disabled{opacity:.45}
+.topic-count{font-weight:800;color:#102437;text-align:center}
+@media(prefers-reduced-motion:reduce){.topic-deck{scroll-behavior:auto}}
 </style></head><body><main><header><h1>🐶 Pup's Journal</h1><p>A colorful notebook for programming discoveries, diagrams, and little bits of code. Tap any section to open it!</p></header>
-<details open><summary>🌿 GitHub &amp; Branches</summary><p class="scroll-hint">↔ Swipe left or right to browse lessons</p><div class="entry-list" tabindex="0" role="region" aria-label="Scrollable journal topics"><details><summary>🐶 October 28: Our puppy menu makeover and tester page</summary><div class="article-panel"><button type="button" class="back-button" aria-label="Back to topics">← Back to Topics</button><h2 class="article-title">🐶 Building the Happy Furrbabbies welcome menu</h2>
+<div class="topic-deck" id="topic-deck" role="region" tabindex="0" aria-label="Swipe between main journal topics"><details open><summary>🌿 GitHub &amp; Branches</summary><p class="scroll-hint">↔ Swipe left or right to browse lessons</p><div class="entry-list" tabindex="0" role="region" aria-label="Scrollable journal topics"><details><summary>🐶 October 28: Our puppy menu makeover and tester page</summary><div class="article-panel"><button type="button" class="back-button" aria-label="Back to topics">← Back to Topics</button><h2 class="article-title">🐶 Building the Happy Furrbabbies welcome menu</h2>
 <p><strong>October 28, 2026 — Build diary:</strong> We tested the public landing page on a phone and refined the floating puppy menu through a series of small GitHub pull requests. The owner wanted real dog-bone shapes rather than rounded rectangles, a smaller menu, happy puppy faces, and clear navigation back Home.</p>
 <h3>What changed</h3><ul><li><strong>#227–#228:</strong> The bones changed from angular bow ties into rounded four-lobed shapes.</li><li><strong>#229–#230:</strong> The menu became smaller; the Happy Furrbabbies title became a working Home button; icons moved into the fat left ends of the bones.</li><li><strong>#231:</strong> The Join submenu received overflow constraints to keep choices inside the floating panel.</li><li><strong>#232:</strong> Shared Treats testing moved off the public landing page to a separate Tester Tools page, linked from the Pet Parent page.</li><li><strong>#233:</strong> We added cheerful inline SVG puppy-face drawings and tightened the layout.</li><li><strong>#234:</strong> The pink Join bone gained a contrasting yellow heart, larger icons, and further compact spacing. <em>Check that this pull request is merged before treating these last changes as published.</em></li></ul>
 <h3>Diagram: where a tap goes</h3><figure class="code-flow"><svg viewBox="0 0 560 250" role="img" aria-label="Puppy face opens the public menu. Menu title goes Home, five bones lead to website sections, and Tester Tools lives separately on the Pet Parent page."><rect x="170" y="8" width="220" height="48" rx="22" fill="#ffe0a8" stroke="#b87941" stroke-width="3"/><text x="280" y="38" text-anchor="middle" font-size="17" font-weight="bold" fill="#14283b">🐶 Puppy menu button</text><path d="M280 56V84" stroke="#138f98" stroke-width="4"/><rect x="120" y="84" width="320" height="49" rx="16" fill="#c6f4fa" stroke="#138f98" stroke-width="3"/><text x="280" y="105" text-anchor="middle" font-size="16" font-weight="bold" fill="#14283b">Happy Furrbabbies menu</text><text x="280" y="123" text-anchor="middle" font-size="13" fill="#14283b">Tap title → Home</text><path d="M280 133V157M100 157H460M100 157V176M280 157V176M460 157V176" stroke="#138f98" stroke-width="4" fill="none"/><rect x="8" y="176" width="185" height="55" rx="14" fill="#ffd5ec" stroke="#c24e92" stroke-width="3"/><text x="100" y="197" text-anchor="middle" font-size="15" font-weight="bold" fill="#14283b">Join / Log In</text><text x="100" y="216" text-anchor="middle" font-size="12" fill="#14283b">Expandable choices</text><rect x="202" y="176" width="157" height="55" rx="14" fill="#d9ff9d" stroke="#74a529" stroke-width="3"/><text x="280" y="197" text-anchor="middle" font-size="15" font-weight="bold" fill="#14283b">Explore / Help</text><text x="280" y="216" text-anchor="middle" font-size="12" fill="#14283b">Website sections</text><rect x="369" y="176" width="183" height="55" rx="14" fill="#eac7ff" stroke="#9c64bd" stroke-width="3"/><text x="460" y="197" text-anchor="middle" font-size="15" font-weight="bold" fill="#14283b">Sanctuaries</text><text x="460" y="216" text-anchor="middle" font-size="12" fill="#14283b">Dog-focused program</text></svg><figcaption>The public puppy menu is for visitors. Tester Tools is a separate page reached from the Pet Parent area, not another public bone.</figcaption></figure>
@@ -88,7 +101,7 @@ moveDecoratingDogSlide(delta: number) {
                            Cloudflare D1
                                   ↓
 Pet Parent phone ← approved activity feed</code></pre><p><strong>Privacy:</strong> Keep the experiment limited to invited testers and approved sample posts. Existing browser-local posts do not automatically synchronize. The final feature still needs access setup, abuse controls, and two-phone testing. Preserve colorful compact cards and the happy dancing puppy.</p></div></details></div></details>
-<footer>Made with curiosity and puppy paws 🐾</footer></main><script>
+</div><footer>Made with curiosity and puppy paws 🐾</footer></main><script>
 const articles=document.querySelectorAll('.entry-list > details');
 let savedScroll=0;
 function closeArticle(article){
@@ -129,4 +142,22 @@ document.querySelectorAll('.entry-list').forEach(list=>{
  list.addEventListener('scroll',()=>{if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;const left=list.scrollLeft;let best=0,dist=Infinity;items.forEach((el,i)=>{const d=Math.abs(el.offsetLeft-items[0].offsetLeft-left);if(d<dist){dist=d;best=i}});current=best;update()})},{passive:true});
  update();
 });
+
+/* Main section carousel. Keep lesson carousels independent. */
+const topicDeck=document.getElementById('topic-deck');
+const topics=Array.from(topicDeck.children).filter(el=>el.tagName==='DETAILS');
+const topicControls=document.createElement('nav');
+topicControls.className='topic-controls';topicControls.setAttribute('aria-label','Main journal topic navigation');
+const topicPrev=document.createElement('button');topicPrev.type='button';topicPrev.textContent='❮ Topic';topicPrev.setAttribute('aria-label','Previous main topic');
+const topicCount=document.createElement('span');topicCount.className='topic-count';topicCount.setAttribute('aria-live','polite');
+const topicNext=document.createElement('button');topicNext.type='button';topicNext.textContent='Topic ❯';topicNext.setAttribute('aria-label','Next main topic');
+topicControls.append(topicPrev,topicCount,topicNext);topicDeck.before(topicControls);
+let topicIndex=0;
+function updateTopic(){topicCount.textContent=(topicIndex+1)+' of '+topics.length;topicPrev.disabled=topicIndex===0;topicNext.disabled=topicIndex===topics.length-1;}
+function chooseTopic(index){topicIndex=Math.max(0,Math.min(topics.length-1,index));topics.forEach((item,i)=>{item.open=i===topicIndex});const left=topics[topicIndex].offsetLeft-topics[0].offsetLeft;topicDeck.scrollTo({left,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});updateTopic();}
+topicPrev.addEventListener('click',()=>chooseTopic(topicIndex-1));topicNext.addEventListener('click',()=>chooseTopic(topicIndex+1));
+let topicPending=false;
+topicDeck.addEventListener('scroll',()=>{if(topicPending)return;topicPending=true;requestAnimationFrame(()=>{topicPending=false;const left=topicDeck.scrollLeft;let closest=0,distance=Infinity;topics.forEach((item,i)=>{const d=Math.abs(item.offsetLeft-topics[0].offsetLeft-left);if(d<distance){closest=i;distance=d}});if(closest!==topicIndex){topicIndex=closest;topics.forEach((item,i)=>{item.open=i===closest});}updateTopic()})},{passive:true});
+topics.forEach((item,i)=>item.addEventListener('toggle',()=>{if(item.open&&i!==topicIndex&&!document.body.classList.contains('article-open'))chooseTopic(i)}));
+updateTopic();
 </script></body></html>
