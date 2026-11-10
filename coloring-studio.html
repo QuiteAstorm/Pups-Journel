@@ -40,7 +40,7 @@
 <img id="private-preview" alt="Private coloring page selected from this device" hidden>
 <canvas id="paint" width="800" height="600" aria-label="Draw with a finger, stylus, or mouse"></canvas>
 </div></div>
-<p class="hint">Tip: Tap to Fill works on the sample; private pictures currently support brushes and eraser. Saved versions stay in this browser and may be limited by storage space.</p>
+<p class="hint">Tip: Tap to Fill on imported black-and-white drawings works best with closed, dark outlines. It may not fill photographs accurately. Undo removes an unwanted fill. Saved versions stay in this browser and may be limited by storage space.</p>
 <div class="panel tools">
 <button id="clear" type="button">Start over</button>
 <label>Artwork name <input id="name" maxlength="60" value="My puppy masterpiece" aria-label="Artwork name"></label>
@@ -56,9 +56,12 @@ const svg=document.getElementById('drawing'),status=document.getElementById('sta
 const regions=Array.from(svg.querySelectorAll('[data-region]'));
 const outlines=svg.cloneNode(true);outlines.removeAttribute('id');outlines.classList.add('outlines');outlines.querySelectorAll('[data-region]').forEach(el=>el.setAttribute('fill','none'));outlines.querySelector('rect').setAttribute('fill','none');document.getElementById('artwork').append(outlines);
 const storeKey='my-happy-pups-demo-v1';
-const privatePreview=document.getElementById('private-preview');let privateArt=null;
+const privatePreview=document.getElementById('private-preview');let privateArt=null,privateFills=[];
+const baseCanvas=document.createElement('canvas');baseCanvas.width=W;baseCanvas.height=H;const baseCtx=baseCanvas.getContext('2d',{willReadFrequently:true});
+function refreshBase(){if(!privateArt||!privatePreview.complete||!privatePreview.naturalWidth)return;try{baseCtx.fillStyle='#ffffff';baseCtx.fillRect(0,0,W,H);baseCtx.drawImage(privatePreview,0,0,W,H)}catch{tell('Could not read this picture for Tap to Fill.')}}
+privatePreview.addEventListener('load',()=>{refreshBase();render()});
 function setPrivateArt(src){privateArt=src||null;privatePreview.hidden=!privateArt;privatePreview.src=privateArt||'';artwork.classList.toggle('private-art',!!privateArt);document.getElementById('sample-art').disabled=!privateArt;}
-document.getElementById('private-art').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;if(!/^image\/(png|jpeg|webp)$/.test(file.type)){tell('Choose a PNG, JPEG, or WebP picture.');return}const reader=new FileReader();reader.onload=()=>{setPrivateArt(reader.result);strokes=[];fills={};history=[snapshot()];index=0;render();tell('Private picture opened on this device. Use brushes; Tap to Fill is available on the sample only.');};reader.readAsDataURL(file)});
+document.getElementById('private-art').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;if(!/^image\/(png|jpeg|webp)$/.test(file.type)){tell('Choose a PNG, JPEG, or WebP picture.');return}const reader=new FileReader();reader.onload=()=>{setPrivateArt(reader.result);strokes=[];fills={};privateFills=[];history=[snapshot()];index=0;render();tell('Private picture opened. Tap to Fill can now be tested on closed black-and-white outlines.');};reader.readAsDataURL(file)});
 document.getElementById('sample-art').onclick=()=>{setPrivateArt(null);strokes=[];fills={};history=[snapshot()];index=0;render();tell('Sample picture restored.')};
 const sizeInput=document.getElementById('size');sizeInput.addEventListener('input',()=>document.getElementById('size-label').textContent=sizeInput.value);
 const viewport=document.getElementById('art-viewport'),artwork=document.getElementById('artwork');let zoom=1;
@@ -70,13 +73,14 @@ const scrollToggle=document.getElementById('scroll-toggle'),scrollModeLabel=docu
 function setScrollMode(enabled){scrollMode=enabled;artwork.classList.toggle('move-mode',enabled);viewport.classList.toggle('scroll-mode',enabled);scrollToggle.setAttribute('aria-pressed',String(enabled));scrollToggle.textContent=enabled?'✏️ Return to coloring':'✋ Scroll picture / page';scrollModeLabel.textContent=enabled?'Swipe on the picture to scroll':'Drawing enabled';tell(enabled?'Scroll mode: swipe on the picture to move the page.':'Coloring mode: use your selected drawing tool.');}
 scrollToggle.addEventListener('click',()=>setScrollMode(!scrollMode));
 function tell(message){status.textContent=message}
-function snapshot(){return JSON.stringify({strokes,fills,privateArt})}
-function restore(value){const data=JSON.parse(value);strokes=data.strokes||[];fills=data.fills||{};setPrivateArt(data.privateArt||null);render()}
+function snapshot(){return JSON.stringify({strokes,fills,privateFills,privateArt})}
+function restore(value){const data=JSON.parse(value);strokes=data.strokes||[];fills=data.fills||{};privateFills=data.privateFills||[];setPrivateArt(data.privateArt||null);render()}
 let history=[snapshot()],index=0;
 function commit(){const next=snapshot();if(next!==history[index]){history=history.slice(0,index+1);history.push(next);index=history.length-1;}render()}
 function render(){
  regions.forEach(el=>el.setAttribute('fill',fills[el.dataset.region]||'white'));
  ctx.clearRect(0,0,W,H);
+ if(privateArt&&privatePreview.complete&&privatePreview.naturalWidth){privateFills.forEach(f=>drawPrivateFill(f));}
  strokes.forEach(drawStroke);
  document.getElementById('undo').disabled=index===0;
  document.getElementById('redo').disabled=index>=history.length-1;
@@ -94,6 +98,9 @@ function drawStroke(s){
  ctx.restore();
 }
 function point(e){const r=canvas.getBoundingClientRect();return [(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height]}
+function drawPrivateFill(f){const mask=computeFillMask(f.x,f.y);if(!mask)return;const image=ctx.createImageData(W,H);const rgb=f.color.match(/[0-9a-f]{2}/gi).map(x=>parseInt(x,16));for(let i=0;i<mask.length;i++){if(mask[i]){const j=i*4;image.data[j]=rgb[0];image.data[j+1]=rgb[1];image.data[j+2]=rgb[2];image.data[j+3]=220;}}const layer=document.createElement('canvas');layer.width=W;layer.height=H;layer.getContext('2d').putImageData(image,0,0);ctx.drawImage(layer,0,0)}
+function computeFillMask(x,y){if(!privateArt||!privatePreview.complete||!privatePreview.naturalWidth)return null;const pixels=baseCtx.getImageData(0,0,W,H).data;const startX=Math.floor(x),startY=Math.floor(y);if(startX<0||startX>=W||startY<0||startY>=H)return null;const start=(startY*W+startX)*4;const lum=i=>(pixels[i]*.299+pixels[i+1]*.587+pixels[i+2]*.114);if(lum(start)<95)return null;const sr=pixels[start],sg=pixels[start+1],sb=pixels[start+2];const allowed=i=>{const p=i*4;return lum(p)>105&&Math.abs(pixels[p]-sr)<62&&Math.abs(pixels[p+1]-sg)<62&&Math.abs(pixels[p+2]-sb)<62};const seen=new Uint8Array(W*H),queue=new Int32Array(W*H);let head=0,tail=0;const origin=startY*W+startX;seen[origin]=1;queue[tail++]=origin;while(head<tail){const i=queue[head++],xx=i%W;const neighbors=[xx>0?i-1:-1,xx<W-1?i+1:-1,i>=W?i-W:-1,i<W*(H-1)?i+W:-1];for(const n of neighbors){if(n>=0&&!seen[n]&&allowed(n)){seen[n]=1;queue[tail++]=n;}}}if(tail>W*H*.45)return null;return seen}
+function fillPrivateAt(p){if(!privatePreview.complete||!privatePreview.naturalWidth){tell('Picture is still loading. Try again.');return}refreshBase();const mask=computeFillMask(p[0],p[1]);if(!mask){tell('That area is dark or too open to fill safely. Try a closed white area, or use a brush.');return}privateFills.push({x:p[0],y:p[1],color:document.getElementById('color').value});commit();tell('Filled an outlined area. Undo if color crosses a line.')}
 function fillAt(p){
  const hit=regionAt(p);
  if(!hit){tell('Tap inside a closed shape to fill it.');return}
@@ -110,7 +117,7 @@ canvas.addEventListener('pointerdown',e=>{
  if(e.button!==0&&e.pointerType==='mouse')return;
  if(scrollMode)return;
  const p=point(e);
- if(tool==='fill'){if(privateArt){tell('Tap to Fill is not yet available on imported pictures. Choose a brush.');return}fillAt(p);return}
+ if(tool==='fill'){if(privateArt)fillPrivateAt(p);else fillAt(p);return}
  if(tool==='eraser'&&!privateArt&&eraseFillAt(p))return;
  pointerId=e.pointerId;canvas.setPointerCapture(pointerId);
  active={tool,color:document.getElementById('color').value,size:+document.getElementById('size').value,points:[p]};
@@ -127,7 +134,7 @@ document.querySelectorAll('[data-tool]').forEach(button=>button.addEventListener
 }));
 document.getElementById('undo').onclick=()=>{if(index>0){index--;restore(history[index]);tell('Undid last change.')}};
 document.getElementById('redo').onclick=()=>{if(index<history.length-1){index++;restore(history[index]);tell('Redid last change.')}};
-document.getElementById('clear').onclick=()=>{if(!confirm('Clear the current coloring? Saved versions will stay.'))return;strokes=[];fills={};commit();tell('Current coloring cleared.')};
+document.getElementById('clear').onclick=()=>{if(!confirm('Clear the current coloring? Saved versions will stay.'))return;strokes=[];fills={};privateFills=[];commit();tell('Current coloring cleared.')};
 function getVersions(){try{return JSON.parse(localStorage.getItem(storeKey)||'[]')}catch{return []}}
 function gallery(){
  const target=document.getElementById('gallery');target.replaceChildren();
