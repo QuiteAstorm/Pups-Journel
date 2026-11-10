@@ -17,9 +17,20 @@
 <button type="button" data-tool="paint" aria-pressed="false">🖌️ Paint</button>
 <button type="button" data-tool="fill" aria-pressed="false">🪣 Tap to fill</button>
 <button type="button" data-tool="eraser" aria-pressed="false">⌫ Eraser</button>
-<label>Shading tolerance <input id="fill-tolerance" type="range" min="0" max="3" value="1" step="1" aria-label="How much pencil shading Tap to Fill ignores"><output id="fill-tolerance-label">Medium</output></label>
+
 <label>Color <input id="color" type="color" value="#f39c36" aria-label="Choose color"></label>
 <label>Size <input id="size" type="range" min="1" max="42" value="8" step="1" aria-label="Brush size"> <output id="size-label" for="size">8</output></label>
+</div>
+<div class="fill-settings" role="group" aria-label="Tap to Fill settings" style="padding:8px 4px;border-top:1px solid #c6dce0">
+<strong>🪣 Tap to Fill settings (not pencil Size)</strong>
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:6px">
+<label for="fill-tolerance">Shading tolerance</label>
+<select id="fill-tolerance" aria-label="Shading tolerance" style="font:inherit;min-height:44px;padding:7px;border:2px solid #365465;border-radius:8px">
+<option value="0">Very low</option><option value="1" selected>Medium</option><option value="2">High</option><option value="3">Very high</option>
+</select>
+<label style="display:flex;align-items:center;gap:6px;white-space:normal"><input type="checkbox" id="fine-fill" style="width:22px;height:22px"> Fine Detail Fill (nose, eyes, muzzle)</label>
+</div>
+<small>Fine Detail Fill uses stricter edges and smaller fill areas. If a pencil outline has a gap, color may still cross it. Undo is always available.</small>
 </div>
 <div class="tools zoom-tools" role="group" aria-label="Picture zoom and movement"><button type="button" id="zoom-out">− Zoom</button><strong id="zoom-label" aria-live="polite">100%</strong><button type="button" id="zoom-in">+ Zoom</button><button type="button" id="zoom-reset">Fit picture</button><button type="button" id="pan-left" aria-label="Move picture left">←</button><button type="button" id="pan-up" aria-label="Move picture up">↑</button><button type="button" id="pan-down" aria-label="Move picture down">↓</button><button type="button" id="pan-right" aria-label="Move picture right">→</button></div></div>
 <div class="quick-history" role="group" aria-label="Undo and redo coloring"><button id="undo" type="button">↶ Undo</button><button id="redo" type="button">↷ Redo</button></div>
@@ -99,10 +110,9 @@ function drawStroke(s){
  ctx.restore();
 }
 function point(e){const r=canvas.getBoundingClientRect();return [(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height]}
-const toleranceInput=document.getElementById('fill-tolerance'),toleranceLabel=document.getElementById('fill-tolerance-label');
+const toleranceInput=document.getElementById('fill-tolerance'),fineFillInput=document.getElementById('fine-fill');
 const toleranceNames=['Very low','Medium','High','Very high'];
-toleranceInput.addEventListener('input',()=>{toleranceLabel.textContent=toleranceNames[+toleranceInput.value]});
-function computeFillMask(x,y,tolerance=1){
+function computeFillMask(x,y,tolerance=1,fine=false){
  if(!privateArt||!privatePreview.complete||!privatePreview.naturalWidth)return null;
  const pixels=baseCtx.getImageData(0,0,W,H).data;
  const sx=Math.floor(x),sy=Math.floor(y);if(sx<0||sx>=W||sy<0||sy>=H)return null;
@@ -110,7 +120,7 @@ function computeFillMask(x,y,tolerance=1){
  for(let i=0;i<n;i++){const j=i*4;lum[i]=Math.round(pixels[j]*.299+pixels[j+1]*.587+pixels[j+2]*.114)}
  const origin=sy*W+sx;if(lum[origin]<65)return null;
  // A small neighborhood average softens isolated pencil hatching while retaining broad dark contours.
- const radius=[0,1,2,3][tolerance],threshold=[165,150,135,120][tolerance];
+ const radius=fine?0:[0,1,2,3][tolerance],threshold=fine?Math.min(220,[205,195,185,175][tolerance]):[165,150,135,120][tolerance];
  const pass=new Uint8Array(n);
  if(radius===0){for(let i=0;i<n;i++)pass[i]=lum[i]>=threshold?1:0}
  else{
@@ -128,12 +138,12 @@ function computeFillMask(x,y,tolerance=1){
   const i=queue[head++],xx=i%W;
   const a=xx>0?i-1:-1,b=xx<W-1?i+1:-1,c=i>=W?i-W:-1,d=i<W*(H-1)?i+W:-1;
   for(const k of [a,b,c,d])if(k>=0&&pass[k]&&!mask[k]){mask[k]=1;queue[tail++]=k}
-  if(tail>n*.45)return null;
+  if(tail>n*(fine?.075:.45))return null;
  }
  return {mask,lum};
 }
 function drawPrivateFill(f){
- const result=computeFillMask(f.x,f.y,f.tolerance??0);if(!result)return;
+ const result=computeFillMask(f.x,f.y,f.tolerance??0,!!f.fine);if(!result)return;
  const {mask,lum}=result,im=ctx.createImageData(W,H),rgb=f.color.match(/[0-9a-f]{2}/gi).map(x=>parseInt(x,16));
  for(let i=0;i<mask.length;i++)if(mask[i]){
   const j=i*4;
@@ -145,10 +155,10 @@ function drawPrivateFill(f){
 }
 function fillPrivateAt(p){
  if(!privatePreview.complete||!privatePreview.naturalWidth){tell('Picture is still loading. Try again.');return}
- refreshBase();const tolerance=+toleranceInput.value;
- if(!computeFillMask(p[0],p[1],tolerance)){tell('Area too dark or open for a safe fill. Try a lower shading tolerance or a different spot.');return}
- privateFills.push({x:p[0],y:p[1],color:document.getElementById('color').value,tolerance});
- commit();tell('Filled with '+toleranceNames[tolerance]+' shading tolerance. Undo if color crosses an outline.');
+ refreshBase();const tolerance=+toleranceInput.value,fine=fineFillInput.checked;
+ if(!computeFillMask(p[0],p[1],tolerance,fine)){tell('Area too dark, open, or large for this fill mode. Try another spot or turn off Fine Detail Fill.');return}
+ privateFills.push({x:p[0],y:p[1],color:document.getElementById('color').value,tolerance,fine});
+ commit();tell((fine?'Fine detail':'Regular')+' fill at '+toleranceNames[tolerance]+' tolerance. Undo if color crosses an outline.');
 }
 function fillAt(p){
  const hit=regionAt(p);
