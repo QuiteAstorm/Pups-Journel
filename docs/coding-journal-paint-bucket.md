@@ -46,3 +46,19 @@ CSS styles a page. Bootstrap provides prebuilt UI styles and components. Sass he
 **Journal lesson:** You can recognize a real programming problem long before you know the algorithm that might solve it. The user's observation about Butterscotch's shading led directly to the next experiment.
 
 **Privacy:** Personal family portraits are not included in this public repository; this note describes the technique only.
+
+## Learn more — beginner-friendly references
+
+Start with the first two links, then explore pixel processing when you're curious:
+
+1. [W3Schools JavaScript Tutorial](https://www.w3schools.com/js/) — JavaScript fundamentals and small examples you can try.
+2. [W3Schools HTML Canvas Tutorial](https://www.w3schools.com/graphics/canvas_intro.asp) — Drawing on a web page with Canvas.
+3. [MDN Canvas API tutorial](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial) — More detailed explanations of Canvas.
+4. [MDN: Pixel manipulation with Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Pixel_manipulation_with_canvas) — Reading and changing image pixels, the key idea behind our fill algorithm.
+5. [MDN: ImageData](https://developer.mozilla.org/en-US/docs/Web/API/ImageData) — What pixel arrays contain and how JavaScript represents image data.
+
+**Practice idea:** Open a simple black-and-white drawing in the studio. Tap to Fill at low tolerance, then try medium and high. Watch how the same algorithm produces different results when you change its threshold. Undo after each experiment.
+
+**Research tip:** If you don't know what to search for, start by describing the symptom: “JavaScript Canvas paint bucket stops at pencil shading.” Useful search terms you'll encounter include *flood fill*, *pixel threshold*, *image segmentation*, and *boundary detection*.
+
+W3Schools is a beginner tutorial site; MDN is a more detailed web-development reference. Neither is required reading before experimenting with our studio.
