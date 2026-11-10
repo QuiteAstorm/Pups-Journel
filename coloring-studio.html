@@ -18,8 +18,13 @@
 <button type="button" data-tool="fill" aria-pressed="false">🪣 Tap to fill</button>
 <button type="button" data-tool="eraser" aria-pressed="false">⌫ Eraser</button>
 
-<label>Color <input id="color" type="color" value="#f39c36" aria-label="Choose color"></label>
+
 <label>Size <input id="size" type="range" min="1" max="42" value="8" step="1" aria-label="Brush size"> <output id="size-label" for="size">8</output></label>
+</div>
+<div class="color-settings" role="group" aria-label="Choose your drawing or fill color" style="padding:9px 7px;border-top:1px solid #c6dce0;display:flex;align-items:center;flex-wrap:wrap;gap:12px">
+<label for="color" style="font-weight:800;font-size:1.05rem">🎨 Choose your color</label>
+<input id="color" type="color" value="#f39c36" aria-label="Choose drawing and fill color" style="width:84px;height:54px;padding:3px;border:2px solid #365465;border-radius:10px;cursor:pointer">
+<span style="font-size:.9rem">Tap the colored square to pick a color for pencil, paint, or fill.</span>
 </div>
 <div class="fill-settings" role="group" aria-label="Tap to Fill settings" style="padding:8px 4px;border-top:1px solid #c6dce0">
 <strong>🪣 Tap to Fill settings (not pencil Size)</strong>
