@@ -58,12 +58,12 @@ const viewport=document.getElementById('art-viewport'),artwork=document.getEleme
 function setZoom(next){const oldWidth=artwork.getBoundingClientRect().width;const cx=(viewport.scrollLeft+viewport.clientWidth/2)/oldWidth,cy=(viewport.scrollTop+viewport.clientHeight/2)/(oldWidth*H/W);zoom=Math.max(1,Math.min(4,next));artwork.style.width=(zoom*100)+'%';document.getElementById('zoom-label').textContent=Math.round(zoom*100)+'%';const newWidth=artwork.getBoundingClientRect().width;viewport.scrollLeft=cx*newWidth-viewport.clientWidth/2;viewport.scrollTop=cy*newWidth*H/W-viewport.clientHeight/2;}
 document.getElementById('zoom-in').onclick=()=>setZoom(zoom+.5);document.getElementById('zoom-out').onclick=()=>setZoom(zoom-.5);document.getElementById('zoom-reset').onclick=()=>{setZoom(1);viewport.scrollTo(0,0)};
 [['pan-left',-120,0],['pan-right',120,0],['pan-up',0,-120],['pan-down',0,120]].forEach(([id,x,y])=>document.getElementById(id).onclick=()=>viewport.scrollBy({left:x,top:y,behavior:'smooth'}));
-let tool='pencil',strokes=[],fills={},redo=[],active=null,pointerId=null;
+let tool='pencil',strokes=[],fills={},active=null,pointerId=null;
 function tell(message){status.textContent=message}
 function snapshot(){return JSON.stringify({strokes,fills})}
 function restore(value){const data=JSON.parse(value);strokes=data.strokes||[];fills=data.fills||{};render()}
 let history=[snapshot()],index=0;
-function commit(){history=history.slice(0,index+1);history.push(snapshot());index++;render()}
+function commit(){const next=snapshot();if(next!==history[index]){history=history.slice(0,index+1);history.push(next);index=history.length-1;}render()}
 function render(){
  regions.forEach(el=>el.setAttribute('fill',fills[el.dataset.region]||'white'));
  ctx.clearRect(0,0,W,H);
@@ -80,24 +80,27 @@ function drawStroke(s){
  ctx.lineWidth=s.tool==='pencil'?Math.max(.6,s.size*.42):s.tool==='marker'?s.size*1.5:s.tool==='paint'?s.size*1.8:s.size;
  ctx.beginPath();ctx.moveTo(s.points[0][0],s.points[0][1]);
  if(s.points.length>2){for(let i=1;i<s.points.length-1;i++){const a=s.points[i],b=s.points[i+1];ctx.quadraticCurveTo(a[0],a[1],(a[0]+b[0])/2,(a[1]+b[1])/2)}const last=s.points[s.points.length-1];ctx.lineTo(last[0],last[1]);}else s.points.slice(1).forEach(p=>ctx.lineTo(p[0],p[1]));
- if(s.points.length===1){ctx.arc(s.points[0][0],s.points[0][1],ctx.lineWidth/2,0,Math.PI*2);ctx.fill()}else ctx.stroke();
+ if(s.points.length===1){ctx.beginPath();ctx.arc(s.points[0][0],s.points[0][1],ctx.lineWidth/2,0,Math.PI*2);ctx.fill()}else ctx.stroke();
  ctx.restore();
 }
 function point(e){const r=canvas.getBoundingClientRect();return [(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height]}
 function fillAt(p){
- const hit=regions.slice().reverse().find(el=>{
-  if(el.tagName==='circle'){const cx=+el.getAttribute('cx'),cy=+el.getAttribute('cy'),r=+el.getAttribute('r');return Math.hypot(p[0]-cx,p[1]-cy)<=r}
-  const path=new Path2D(el.getAttribute('d'));return ctx.isPointInPath(path,p[0],p[1]);
- });
+ const hit=regionAt(p);
  if(!hit){tell('Tap inside a closed shape to fill it.');return}
  const color=document.getElementById('color').value;
  if(fills[hit.dataset.region]===color)return;
  fills[hit.dataset.region]=color;commit();
 }
+function regionAt(p){return regions.slice().reverse().find(el=>{
+  if(el.tagName==='circle'){const cx=+el.getAttribute('cx'),cy=+el.getAttribute('cy'),r=+el.getAttribute('r');return Math.hypot(p[0]-cx,p[1]-cy)<=r}
+  const path=new Path2D(el.getAttribute('d'));return ctx.isPointInPath(path,p[0],p[1]);
+ });}
+function eraseFillAt(p){const hit=regionAt(p);if(!hit||!fills[hit.dataset.region])return false;delete fills[hit.dataset.region];commit();tell('Removed fill. Undo restores it.');return true;}
 canvas.addEventListener('pointerdown',e=>{
  if(e.button!==0&&e.pointerType==='mouse')return;
  const p=point(e);
  if(tool==='fill'){fillAt(p);return}
+ if(tool==='eraser'&&eraseFillAt(p))return;
  pointerId=e.pointerId;canvas.setPointerCapture(pointerId);
  active={tool,color:document.getElementById('color').value,size:+document.getElementById('size').value,points:[p]};
  strokes.push(active);render();
@@ -108,10 +111,10 @@ canvas.addEventListener('pointerup',finish);canvas.addEventListener('pointercanc
 document.querySelectorAll('[data-tool]').forEach(button=>button.addEventListener('click',()=>{
  tool=button.dataset.tool;
  document.querySelectorAll('[data-tool]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
- tell(tool==='fill'?'Tap a closed area to color it.':'Selected '+tool+'.');
+ tell(tool==='fill'?'Tap a closed area to color it.':tool==='eraser'?'Tap a filled shape to clear it, or rub out freehand marks.':'Selected '+tool+'.');
 }));
-document.getElementById('undo').onclick=()=>{if(index>0)restore(history[--index])};
-document.getElementById('redo').onclick=()=>{if(index<history.length-1)restore(history[++index])};
+document.getElementById('undo').onclick=()=>{if(index>0){index--;restore(history[index]);tell('Undid last change.')}};
+document.getElementById('redo').onclick=()=>{if(index<history.length-1){index++;restore(history[index]);tell('Redid last change.')}};
 document.getElementById('clear').onclick=()=>{if(!confirm('Clear the current coloring? Saved versions will stay.'))return;strokes=[];fills={};commit();tell('Current coloring cleared.')};
 function getVersions(){try{return JSON.parse(localStorage.getItem(storeKey)||'[]')}catch{return []}}
 function gallery(){
