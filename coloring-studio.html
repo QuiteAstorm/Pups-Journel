@@ -3,7 +3,7 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>My Happy Pups | Coloring Studio Prototype</title>
 <style>
-:root{font-family:system-ui,sans-serif;color:#172c3d;background:#fff7e8}*{box-sizing:border-box}body{margin:0;padding:16px}main{max-width:940px;margin:auto}h1{margin:.3em 0}p{line-height:1.5}a{color:#075d73}button,select,input{font:inherit}button,.download{border:2px solid #176b76;background:white;color:#173443;border-radius:12px;padding:9px 13px;min-height:44px;font-weight:750;cursor:pointer}button[aria-pressed=true]{background:#a7edf0}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #b04427;outline-offset:2px}.panel{background:white;border:2px solid #3e969c;border-radius:18px;padding:12px;margin:14px 0}.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.tools label{font-weight:750;display:flex;align-items:center;gap:8px}.artwork{width:100%;max-width:800px;aspect-ratio:4/3;position:relative;margin:auto;border:3px solid #1d5867;border-radius:12px;overflow:hidden;background:#fff;touch-action:none}.artwork svg,.artwork canvas{position:absolute;inset:0;width:100%;height:100%}.artwork svg{pointer-events:none}.artwork canvas{z-index:2}.artwork svg.outlines{z-index:3}.artwork canvas{touch-action:none}.hint{font-size:.92rem;color:#365465}.status{min-height:1.5em;font-weight:750}.gallery{display:flex;flex-wrap:wrap;gap:8px}.gallery button{font-weight:600}.swatch{width:42px;height:42px;padding:3px}input[type=color]{height:44px;width:54px}input[type=range]{max-width:110px}svg path,svg circle{stroke:#192b36;stroke-width:6;stroke-linejoin:round;stroke-linecap:round}svg text{font-family:system-ui,sans-serif;font-weight:800;fill:#192b36}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+:root{font-family:system-ui,sans-serif;color:#172c3d;background:#fff7e8}*{box-sizing:border-box}body{margin:0;padding:16px}main{max-width:940px;margin:auto}h1{margin:.3em 0}p{line-height:1.5}a{color:#075d73}button,select,input{font:inherit}button,.download{border:2px solid #176b76;background:white;color:#173443;border-radius:12px;padding:9px 13px;min-height:44px;font-weight:750;cursor:pointer}button[aria-pressed=true]{background:#a7edf0}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #b04427;outline-offset:2px}.panel{background:white;border:2px solid #3e969c;border-radius:18px;padding:12px;margin:14px 0}.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.tools label{font-weight:750;display:flex;align-items:center;gap:8px}.artwork{width:100%;max-width:800px;aspect-ratio:4/3;position:relative;margin:auto;border:3px solid #1d5867;border-radius:12px;overflow:hidden;background:#fff;touch-action:none}.artwork svg,.artwork canvas{position:absolute;inset:0;width:100%;height:100%}.artwork svg{pointer-events:none}.artwork canvas{z-index:2}.artwork svg.outlines{z-index:3}.artwork canvas{touch-action:none}.hint{font-size:.92rem;color:#365465}.status{min-height:1.5em;font-weight:750}.gallery{display:flex;flex-wrap:wrap;gap:8px}.gallery button{font-weight:600}.swatch{width:42px;height:42px;padding:3px}input[type=color]{height:44px;width:54px}input[type=range]{width:150px;max-width:45vw}.art-viewport{overflow:auto;max-width:800px;margin:auto;border-radius:12px;overscroll-behavior:contain}.art-viewport .artwork{margin:0;max-width:none}.zoom-tools{justify-content:center}.zoom-tools button{min-width:46px}svg path,svg circle{stroke:#192b36;stroke-width:6;stroke-linejoin:round;stroke-linecap:round}svg text{font-family:system-ui,sans-serif;font-weight:800;fill:#192b36}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 </style></head>
 <body><main>
 <a href="./index.html">← Back to Pup's Journal</a>
@@ -17,9 +17,10 @@
 <button type="button" data-tool="fill" aria-pressed="false">🪣 Tap to fill</button>
 <button type="button" data-tool="eraser" aria-pressed="false">⌫ Eraser</button>
 <label>Color <input id="color" type="color" value="#f39c36" aria-label="Choose color"></label>
-<label>Size <input id="size" type="range" min="3" max="42" value="13" aria-label="Brush size"></label>
+<label>Size <input id="size" type="range" min="1" max="42" value="8" step="1" aria-label="Brush size"> <output id="size-label" for="size">8</output></label>
 </div>
-<div class="artwork" id="artwork" aria-label="Coloring canvas with puppy house, sun, bone, and grass">
+<div class="panel tools zoom-tools" role="group" aria-label="Picture zoom and movement"><button type="button" id="zoom-out">− Zoom</button><strong id="zoom-label" aria-live="polite">100%</strong><button type="button" id="zoom-in">+ Zoom</button><button type="button" id="zoom-reset">Fit picture</button><button type="button" id="pan-left" aria-label="Move picture left">←</button><button type="button" id="pan-up" aria-label="Move picture up">↑</button><button type="button" id="pan-down" aria-label="Move picture down">↓</button><button type="button" id="pan-right" aria-label="Move picture right">→</button></div>
+<div class="art-viewport" id="art-viewport"><div class="artwork" id="artwork" aria-label="Coloring canvas with puppy house, sun, bone, and grass">
 <svg id="drawing" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" aria-hidden="true">
 <rect width="800" height="600" fill="white"/>
 <path data-region="sky" d="M0 0H800V470H0Z" fill="white" stroke="none"/>
@@ -34,8 +35,8 @@
 <text x="400" y="560" text-anchor="middle" font-size="22">A happy little puppy home!</text>
 </svg>
 <canvas id="paint" width="800" height="600" aria-label="Draw with a finger, stylus, or mouse"></canvas>
-</div>
-<p class="hint">Draw on the picture, or select <strong>Tap to fill</strong> and touch a shape. The black outlines stay visible. Saving below uses this browser only; it is not a private online account or cloud backup.</p>
+</div></div>
+<p class="hint">Use Zoom and arrow buttons to reach small details. Draw on the picture, or select <strong>Tap to fill</strong> and touch a shape. The black outlines stay visible. Saving below uses this browser only; it is not a private online account or cloud backup.</p>
 <div class="panel tools">
 <button id="undo" type="button">↶ Undo</button><button id="redo" type="button">↷ Redo</button>
 <button id="clear" type="button">Start over</button>
@@ -52,6 +53,11 @@ const svg=document.getElementById('drawing'),status=document.getElementById('sta
 const regions=Array.from(svg.querySelectorAll('[data-region]'));
 const outlines=svg.cloneNode(true);outlines.removeAttribute('id');outlines.classList.add('outlines');outlines.querySelectorAll('[data-region]').forEach(el=>el.setAttribute('fill','none'));outlines.querySelector('rect').setAttribute('fill','none');document.getElementById('artwork').append(outlines);
 const storeKey='my-happy-pups-demo-v1';
+const sizeInput=document.getElementById('size');sizeInput.addEventListener('input',()=>document.getElementById('size-label').textContent=sizeInput.value);
+const viewport=document.getElementById('art-viewport'),artwork=document.getElementById('artwork');let zoom=1;
+function setZoom(next){const oldWidth=artwork.getBoundingClientRect().width;const cx=(viewport.scrollLeft+viewport.clientWidth/2)/oldWidth,cy=(viewport.scrollTop+viewport.clientHeight/2)/(oldWidth*H/W);zoom=Math.max(1,Math.min(4,next));artwork.style.width=(zoom*100)+'%';document.getElementById('zoom-label').textContent=Math.round(zoom*100)+'%';const newWidth=artwork.getBoundingClientRect().width;viewport.scrollLeft=cx*newWidth-viewport.clientWidth/2;viewport.scrollTop=cy*newWidth*H/W-viewport.clientHeight/2;}
+document.getElementById('zoom-in').onclick=()=>setZoom(zoom+.5);document.getElementById('zoom-out').onclick=()=>setZoom(zoom-.5);document.getElementById('zoom-reset').onclick=()=>{setZoom(1);viewport.scrollTo(0,0)};
+[['pan-left',-120,0],['pan-right',120,0],['pan-up',0,-120],['pan-down',0,120]].forEach(([id,x,y])=>document.getElementById(id).onclick=()=>viewport.scrollBy({left:x,top:y,behavior:'smooth'}));
 let tool='pencil',strokes=[],fills={},redo=[],active=null,pointerId=null;
 function tell(message){status.textContent=message}
 function snapshot(){return JSON.stringify({strokes,fills})}
@@ -71,9 +77,9 @@ function drawStroke(s){
  ctx.globalCompositeOperation=s.tool==='eraser'?'destination-out':'source-over';
  ctx.strokeStyle=s.color;ctx.fillStyle=s.color;
  ctx.globalAlpha=s.tool==='crayon'?.58:s.tool==='paint'?.68:1;
- ctx.lineWidth=s.tool==='pencil'?Math.max(2,s.size*.42):s.tool==='marker'?s.size*1.5:s.tool==='paint'?s.size*1.8:s.size;
+ ctx.lineWidth=s.tool==='pencil'?Math.max(.6,s.size*.42):s.tool==='marker'?s.size*1.5:s.tool==='paint'?s.size*1.8:s.size;
  ctx.beginPath();ctx.moveTo(s.points[0][0],s.points[0][1]);
- s.points.slice(1).forEach(p=>ctx.lineTo(p[0],p[1]));
+ if(s.points.length>2){for(let i=1;i<s.points.length-1;i++){const a=s.points[i],b=s.points[i+1];ctx.quadraticCurveTo(a[0],a[1],(a[0]+b[0])/2,(a[1]+b[1])/2)}const last=s.points[s.points.length-1];ctx.lineTo(last[0],last[1]);}else s.points.slice(1).forEach(p=>ctx.lineTo(p[0],p[1]));
  if(s.points.length===1){ctx.arc(s.points[0][0],s.points[0][1],ctx.lineWidth/2,0,Math.PI*2);ctx.fill()}else ctx.stroke();
  ctx.restore();
 }
