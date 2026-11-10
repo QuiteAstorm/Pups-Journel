@@ -3,7 +3,7 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>My Happy Pups | Coloring Studio Prototype</title>
 <style>
-:root{font-family:system-ui,sans-serif;color:#172c3d;background:#fff7e8}*{box-sizing:border-box}body{margin:0;padding:16px}main{max-width:940px;margin:auto}h1{margin:.3em 0}p{line-height:1.5}a{color:#075d73}button,select,input{font:inherit}button,.download{border:2px solid #176b76;background:white;color:#173443;border-radius:12px;padding:9px 13px;min-height:44px;font-weight:750;cursor:pointer}button[aria-pressed=true]{background:#a7edf0}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #b04427;outline-offset:2px}.panel{background:white;border:2px solid #3e969c;border-radius:18px;padding:12px;margin:14px 0}.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.tools label{font-weight:750;display:flex;align-items:center;gap:8px}.artwork{width:100%;max-width:800px;aspect-ratio:4/3;position:relative;margin:auto;border:3px solid #1d5867;border-radius:12px;overflow:hidden;background:#fff;touch-action:none}.artwork svg,.artwork canvas,.artwork img{position:absolute;inset:0;width:100%;height:100%}.artwork img{object-fit:contain;pointer-events:none;z-index:1;background:white}.artwork.private-art #drawing,.artwork.private-art svg.outlines{display:none}.artwork svg{pointer-events:none}.artwork canvas{z-index:2}.artwork svg.outlines{z-index:3}.artwork canvas{touch-action:none}.artwork.move-mode{touch-action:auto;cursor:grab}.artwork.move-mode canvas{pointer-events:none;touch-action:auto}.art-viewport.scroll-mode{overscroll-behavior:auto;touch-action:auto}.quick-history{display:flex;gap:8px;justify-content:center;align-items:center;max-width:800px;margin:6px auto}.quick-history button{flex:1;max-width:200px;min-height:50px;font-size:1.05rem;background:#fff7e8;border-width:2px}.scroll-switch{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:8px auto 4px;max-width:800px}.scroll-switch button{background:#fff0ce;border-color:#a6532a}.scroll-switch button[aria-pressed=true]{background:#a7edf0}.scroll-switch span{font-size:.88rem;color:#365465}.hint{font-size:.92rem;color:#365465}.status{min-height:1.5em;font-weight:750}.gallery{display:flex;flex-wrap:wrap;gap:8px}.gallery button{font-weight:600}.swatch{width:42px;height:42px;padding:3px}input[type=color]{height:44px;width:54px}input[type=range]{width:150px;max-width:45vw}.art-viewport{overflow:auto;max-width:800px;margin:auto;border-radius:12px;overscroll-behavior:contain}.art-viewport .artwork{margin:0;max-width:none}.zoom-tools{justify-content:flex-start}.studio-toolbar{position:sticky;top:0;z-index:10;background:#fffaf0;border:2px solid #3e969c;border-radius:14px;padding:7px;margin:8px 0;box-shadow:0 3px 9px #172c3d22}.studio-toolbar .tools{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:3px 1px;scrollbar-width:thin}.studio-toolbar button{white-space:nowrap;flex-shrink:0;padding:6px 10px;min-height:42px}.studio-toolbar label{flex-shrink:0;white-space:nowrap}.studio-toolbar input[type=range]{width:105px}.studio-toolbar .zoom-tools{border-top:1px solid #c6dce0;margin-top:4px;padding-top:5px}.studio-toolbar #zoom-label{min-width:44px;text-align:center}.studio-toolbar .toolbar-caption{font-size:.8rem;color:#365465;margin:0 0 2px}.studio-toolbar .tools::-webkit-scrollbar{height:4px}@media(max-width:600px){body{padding:9px}.studio-toolbar{margin:5px 0;padding:5px}.studio-toolbar button{font-size:.9rem}}.zoom-tools button{min-width:46px}svg path,svg circle{stroke:#192b36;stroke-width:6;stroke-linejoin:round;stroke-linecap:round}svg text{font-family:system-ui,sans-serif;font-weight:800;fill:#192b36}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+:root{font-family:system-ui,sans-serif;color:#172c3d;background:#fff7e8}*{box-sizing:border-box}body{margin:0;padding:16px}main{max-width:940px;margin:auto}h1{margin:.3em 0}p{line-height:1.5}a{color:#075d73}button,select,input{font:inherit}button,.download{border:2px solid #176b76;background:white;color:#173443;border-radius:12px;padding:9px 13px;min-height:44px;font-weight:750;cursor:pointer}button[aria-pressed=true]{background:#a7edf0}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #b04427;outline-offset:2px}.panel{background:white;border:2px solid #3e969c;border-radius:18px;padding:12px;margin:14px 0}.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.tools label{font-weight:750;display:flex;align-items:center;gap:8px}.artwork{width:100%;max-width:800px;aspect-ratio:4/3;position:relative;margin:auto;border:3px solid #1d5867;border-radius:12px;overflow:hidden;background:#fff;touch-action:none}.artwork svg,.artwork canvas,.artwork img{position:absolute;inset:0;width:100%;height:100%}.artwork img{object-fit:contain;pointer-events:none;z-index:1;background:white}.artwork.private-art #drawing,.artwork.private-art svg.outlines{display:none}.artwork svg{pointer-events:none}.artwork canvas{z-index:2}.artwork svg.outlines{z-index:3}.artwork canvas{touch-action:none}.artwork.move-mode{touch-action:auto;cursor:grab}.artwork.move-mode canvas{pointer-events:none;touch-action:auto}.art-viewport.scroll-mode{overscroll-behavior:auto;touch-action:auto}.quick-history{display:flex;gap:8px;justify-content:center;align-items:center;max-width:800px;margin:6px auto}.quick-history button{flex:1;max-width:200px;min-height:50px;font-size:1.05rem;background:#fff7e8;border-width:2px}.scroll-switch{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:8px auto 4px;max-width:800px}.scroll-switch button{background:#fff0ce;border-color:#a6532a}.scroll-switch button[aria-pressed=true]{background:#a7edf0}.scroll-switch span{font-size:.88rem;color:#365465}.hint{font-size:.92rem;color:#365465}.status{min-height:1.5em;font-weight:750}.gallery{display:flex;flex-wrap:wrap;gap:8px}.gallery button{font-weight:600}.swatch{width:42px;height:42px;padding:3px}input[type=color]{height:44px;width:54px}input[type=range]{width:150px;max-width:45vw}.art-viewport{overflow:auto;max-width:800px;margin:auto;border-radius:12px;overscroll-behavior:contain}.art-viewport .artwork{margin:0;max-width:none}.zoom-tools{justify-content:flex-start}.studio-toolbar{position:sticky;top:0;z-index:10;background:#fffaf0;border:2px solid #3e969c;border-radius:14px;padding:7px;margin:8px 0;box-shadow:0 3px 9px #172c3d22}.studio-toolbar .tools{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:3px 1px;scrollbar-width:thin}.studio-toolbar button{white-space:nowrap;flex-shrink:0;padding:6px 10px;min-height:42px}.studio-toolbar label{flex-shrink:0;white-space:nowrap}.studio-toolbar input[type=range]{width:105px}.studio-toolbar #fill-tolerance{width:90px}.studio-toolbar .zoom-tools{border-top:1px solid #c6dce0;margin-top:4px;padding-top:5px}.studio-toolbar #zoom-label{min-width:44px;text-align:center}.studio-toolbar .toolbar-caption{font-size:.8rem;color:#365465;margin:0 0 2px}.studio-toolbar .tools::-webkit-scrollbar{height:4px}@media(max-width:600px){body{padding:9px}.studio-toolbar{margin:5px 0;padding:5px}.studio-toolbar button{font-size:.9rem}}.zoom-tools button{min-width:46px}svg path,svg circle{stroke:#192b36;stroke-width:6;stroke-linejoin:round;stroke-linecap:round}svg text{font-family:system-ui,sans-serif;font-weight:800;fill:#192b36}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 </style></head>
 <body><main>
 <a href="./index.html">← Back to Pup's Journal</a>
@@ -17,6 +17,7 @@
 <button type="button" data-tool="paint" aria-pressed="false">🖌️ Paint</button>
 <button type="button" data-tool="fill" aria-pressed="false">🪣 Tap to fill</button>
 <button type="button" data-tool="eraser" aria-pressed="false">⌫ Eraser</button>
+<label>Shading tolerance <input id="fill-tolerance" type="range" min="0" max="3" value="1" step="1" aria-label="How much pencil shading Tap to Fill ignores"><output id="fill-tolerance-label">Medium</output></label>
 <label>Color <input id="color" type="color" value="#f39c36" aria-label="Choose color"></label>
 <label>Size <input id="size" type="range" min="1" max="42" value="8" step="1" aria-label="Brush size"> <output id="size-label" for="size">8</output></label>
 </div>
@@ -40,7 +41,7 @@
 <img id="private-preview" alt="Private coloring page selected from this device" hidden>
 <canvas id="paint" width="800" height="600" aria-label="Draw with a finger, stylus, or mouse"></canvas>
 </div></div>
-<p class="hint">Tip: Tap to Fill on imported black-and-white drawings works best with closed, dark outlines. It may not fill photographs accurately. Undo removes an unwanted fill. Saved versions stay in this browser and may be limited by storage space.</p>
+<p class="hint">Tip: Shading tolerance helps Tap to Fill ignore pencil texture. Start at Medium; use Low for tighter edges or High for heavier shading. Fine outlines can still leak, so use Undo if needed. Saved versions stay in this browser and may be limited by storage space.</p>
 <div class="panel tools">
 <button id="clear" type="button">Start over</button>
 <label>Artwork name <input id="name" maxlength="60" value="My puppy masterpiece" aria-label="Artwork name"></label>
@@ -98,9 +99,57 @@ function drawStroke(s){
  ctx.restore();
 }
 function point(e){const r=canvas.getBoundingClientRect();return [(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height]}
-function drawPrivateFill(f){const mask=computeFillMask(f.x,f.y);if(!mask)return;const image=ctx.createImageData(W,H);const rgb=f.color.match(/[0-9a-f]{2}/gi).map(x=>parseInt(x,16));for(let i=0;i<mask.length;i++){if(mask[i]){const j=i*4;image.data[j]=rgb[0];image.data[j+1]=rgb[1];image.data[j+2]=rgb[2];image.data[j+3]=220;}}const layer=document.createElement('canvas');layer.width=W;layer.height=H;layer.getContext('2d').putImageData(image,0,0);ctx.drawImage(layer,0,0)}
-function computeFillMask(x,y){if(!privateArt||!privatePreview.complete||!privatePreview.naturalWidth)return null;const pixels=baseCtx.getImageData(0,0,W,H).data;const startX=Math.floor(x),startY=Math.floor(y);if(startX<0||startX>=W||startY<0||startY>=H)return null;const start=(startY*W+startX)*4;const lum=i=>(pixels[i]*.299+pixels[i+1]*.587+pixels[i+2]*.114);if(lum(start)<95)return null;const sr=pixels[start],sg=pixels[start+1],sb=pixels[start+2];const allowed=i=>{const p=i*4;return lum(p)>105&&Math.abs(pixels[p]-sr)<62&&Math.abs(pixels[p+1]-sg)<62&&Math.abs(pixels[p+2]-sb)<62};const seen=new Uint8Array(W*H),queue=new Int32Array(W*H);let head=0,tail=0;const origin=startY*W+startX;seen[origin]=1;queue[tail++]=origin;while(head<tail){const i=queue[head++],xx=i%W;const neighbors=[xx>0?i-1:-1,xx<W-1?i+1:-1,i>=W?i-W:-1,i<W*(H-1)?i+W:-1];for(const n of neighbors){if(n>=0&&!seen[n]&&allowed(n)){seen[n]=1;queue[tail++]=n;}}}if(tail>W*H*.45)return null;return seen}
-function fillPrivateAt(p){if(!privatePreview.complete||!privatePreview.naturalWidth){tell('Picture is still loading. Try again.');return}refreshBase();const mask=computeFillMask(p[0],p[1]);if(!mask){tell('That area is dark or too open to fill safely. Try a closed white area, or use a brush.');return}privateFills.push({x:p[0],y:p[1],color:document.getElementById('color').value});commit();tell('Filled an outlined area. Undo if color crosses a line.')}
+const toleranceInput=document.getElementById('fill-tolerance'),toleranceLabel=document.getElementById('fill-tolerance-label');
+const toleranceNames=['Very low','Medium','High','Very high'];
+toleranceInput.addEventListener('input',()=>{toleranceLabel.textContent=toleranceNames[+toleranceInput.value]});
+function computeFillMask(x,y,tolerance=1){
+ if(!privateArt||!privatePreview.complete||!privatePreview.naturalWidth)return null;
+ const pixels=baseCtx.getImageData(0,0,W,H).data;
+ const sx=Math.floor(x),sy=Math.floor(y);if(sx<0||sx>=W||sy<0||sy>=H)return null;
+ const n=W*H,lum=new Uint8Array(n);
+ for(let i=0;i<n;i++){const j=i*4;lum[i]=Math.round(pixels[j]*.299+pixels[j+1]*.587+pixels[j+2]*.114)}
+ const origin=sy*W+sx;if(lum[origin]<65)return null;
+ // A small neighborhood average softens isolated pencil hatching while retaining broad dark contours.
+ const radius=[0,1,2,3][tolerance],threshold=[165,150,135,120][tolerance];
+ const pass=new Uint8Array(n);
+ if(radius===0){for(let i=0;i<n;i++)pass[i]=lum[i]>=threshold?1:0}
+ else{
+  const integral=new Uint32Array((W+1)*(H+1));
+  for(let yy=1;yy<=H;yy++){let sum=0;for(let xx=1;xx<=W;xx++){sum+=lum[(yy-1)*W+xx-1];integral[yy*(W+1)+xx]=integral[(yy-1)*(W+1)+xx]+sum}}
+  for(let yy=0;yy<H;yy++)for(let xx=0;xx<W;xx++){
+   const x0=Math.max(0,xx-radius),x1=Math.min(W,xx+radius+1),y0=Math.max(0,yy-radius),y1=Math.min(H,yy+radius+1);
+   const avg=(integral[y1*(W+1)+x1]-integral[y0*(W+1)+x1]-integral[y1*(W+1)+x0]+integral[y0*(W+1)+x0])/((x1-x0)*(y1-y0));
+   pass[yy*W+xx]=avg>=threshold?1:0;
+  }
+ }
+ if(!pass[origin])return null;
+ const mask=new Uint8Array(n),queue=new Int32Array(n);let head=0,tail=0;mask[origin]=1;queue[tail++]=origin;
+ while(head<tail){
+  const i=queue[head++],xx=i%W;
+  const a=xx>0?i-1:-1,b=xx<W-1?i+1:-1,c=i>=W?i-W:-1,d=i<W*(H-1)?i+W:-1;
+  for(const k of [a,b,c,d])if(k>=0&&pass[k]&&!mask[k]){mask[k]=1;queue[tail++]=k}
+  if(tail>n*.45)return null;
+ }
+ return {mask,lum};
+}
+function drawPrivateFill(f){
+ const result=computeFillMask(f.x,f.y,f.tolerance??0);if(!result)return;
+ const {mask,lum}=result,im=ctx.createImageData(W,H),rgb=f.color.match(/[0-9a-f]{2}/gi).map(x=>parseInt(x,16));
+ for(let i=0;i<mask.length;i++)if(mask[i]){
+  const j=i*4;
+  // Tint pale pencil areas strongly; retain dark strokes from the original image underneath.
+  const strength=Math.max(0,Math.min(1,(lum[i]-60)/170));
+  im.data[j]=rgb[0];im.data[j+1]=rgb[1];im.data[j+2]=rgb[2];im.data[j+3]=Math.round(240*strength);
+ }
+ const layer=document.createElement('canvas');layer.width=W;layer.height=H;layer.getContext('2d').putImageData(im,0,0);ctx.drawImage(layer,0,0);
+}
+function fillPrivateAt(p){
+ if(!privatePreview.complete||!privatePreview.naturalWidth){tell('Picture is still loading. Try again.');return}
+ refreshBase();const tolerance=+toleranceInput.value;
+ if(!computeFillMask(p[0],p[1],tolerance)){tell('Area too dark or open for a safe fill. Try a lower shading tolerance or a different spot.');return}
+ privateFills.push({x:p[0],y:p[1],color:document.getElementById('color').value,tolerance});
+ commit();tell('Filled with '+toleranceNames[tolerance]+' shading tolerance. Undo if color crosses an outline.');
+}
 function fillAt(p){
  const hit=regionAt(p);
  if(!hit){tell('Tap inside a closed shape to fill it.');return}
