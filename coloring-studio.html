@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Happy Pups | Coloring Studio Prototype</title>
+<style>
+:root{font-family:system-ui,sans-serif;color:#172c3d;background:#fff7e8}*{box-sizing:border-box}body{margin:0;padding:16px}main{max-width:940px;margin:auto}h1{margin:.3em 0}p{line-height:1.5}a{color:#075d73}button,select,input{font:inherit}button,.download{border:2px solid #176b76;background:white;color:#173443;border-radius:12px;padding:9px 13px;min-height:44px;font-weight:750;cursor:pointer}button[aria-pressed=true]{background:#a7edf0}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #b04427;outline-offset:2px}.panel{background:white;border:2px solid #3e969c;border-radius:18px;padding:12px;margin:14px 0}.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.tools label{font-weight:750;display:flex;align-items:center;gap:8px}.artwork{width:100%;max-width:800px;aspect-ratio:4/3;position:relative;margin:auto;border:3px solid #1d5867;border-radius:12px;overflow:hidden;background:#fff;touch-action:none}.artwork svg,.artwork canvas{position:absolute;inset:0;width:100%;height:100%}.artwork svg{pointer-events:none}.artwork canvas{touch-action:none}.hint{font-size:.92rem;color:#365465}.status{min-height:1.5em;font-weight:750}.gallery{display:flex;flex-wrap:wrap;gap:8px}.gallery button{font-weight:600}.swatch{width:42px;height:42px;padding:3px}input[type=color]{height:44px;width:54px}input[type=range]{max-width:110px}svg path,svg circle{stroke:#192b36;stroke-width:6;stroke-linejoin:round;stroke-linecap:round}svg text{font-family:system-ui,sans-serif;font-weight:800;fill:#192b36}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style></head>
+<body><main>
+<a href="./index.html">← Back to Pup's Journal</a>
+<h1>🐾 My Happy Pups Coloring Studio</h1>
+<p><strong>Prototype:</strong> This is an original sample puppy-house drawing, <em>not</em> one of our approved family portraits. Try the tools before we import any personal artwork.</p>
+<div class="panel tools" role="group" aria-label="Coloring tools">
+<button type="button" data-tool="pencil" aria-pressed="true">✏️ Pencil</button>
+<button type="button" data-tool="crayon" aria-pressed="false">🖍️ Crayon</button>
+<button type="button" data-tool="marker" aria-pressed="false">🖊️ Marker</button>
+<button type="button" data-tool="paint" aria-pressed="false">🖌️ Paint</button>
+<button type="button" data-tool="fill" aria-pressed="false">🪣 Tap to fill</button>
+<button type="button" data-tool="eraser" aria-pressed="false">⌫ Eraser</button>
+<label>Color <input id="color" type="color" value="#f39c36" aria-label="Choose color"></label>
+<label>Size <input id="size" type="range" min="3" max="42" value="13" aria-label="Brush size"></label>
+</div>
+<div class="artwork" id="artwork" aria-label="Coloring canvas with puppy house, sun, bone, and grass">
+<svg id="drawing" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" aria-hidden="true">
+<rect width="800" height="600" fill="white"/>
+<path data-region="sky" d="M0 0H800V470H0Z" fill="white" stroke="none"/>
+<path data-region="grass" d="M0 470H800V600H0Z" fill="white" stroke="none"/>
+<circle data-region="sun" cx="665" cy="110" r="55" fill="white"/>
+<path data-region="roof" d="M150 250L390 80L630 250Z" fill="white"/>
+<path data-region="house" d="M190 250H590V510H190Z" fill="white"/>
+<path data-region="door" d="M330 510V375A60 60 0 0 1 450 375V510Z" fill="white"/>
+<path data-region="window" d="M485 310H555V380H485Z" fill="white"/>
+<path data-region="bone" d="M80 510C40 470 30 550 70 555C35 600 115 605 120 570L205 570C215 610 285 590 255 550C290 510 215 490 205 530H120C120 495 95 490 80 510Z" fill="white"/>
+<path d="M0 470H800" fill="none"/>
+<text x="400" y="560" text-anchor="middle" font-size="22">A happy little puppy home!</text>
+</svg>
+<canvas id="paint" width="800" height="600" aria-label="Draw with a finger, stylus, or mouse"></canvas>
+</div>
+<p class="hint">Draw on the picture, or select <strong>Tap to fill</strong> and touch a shape. The black outlines stay visible. Saving below uses this browser only; it is not a private online account or cloud backup.</p>
+<div class="panel tools">
+<button id="undo" type="button">↶ Undo</button><button id="redo" type="button">↷ Redo</button>
+<button id="clear" type="button">Start over</button>
+<label>Artwork name <input id="name" maxlength="60" value="My puppy masterpiece" aria-label="Artwork name"></label>
+<button id="save" type="button">💾 Save version</button><button id="download" type="button">⬇️ Download PNG</button>
+</div>
+<div class="panel"><h2>My saved versions (this browser)</h2><div id="gallery" class="gallery"></div><p class="hint">Save keeps up to 10 versions on this device if browser storage allows. Clearing browser data or changing devices can remove them. Download important pictures for safekeeping.</p></div>
+<p class="status" id="status" role="status" aria-live="polite"></p>
+</main>
+<script>
+'use strict';
+const W=800,H=600,canvas=document.getElementById('paint'),ctx=canvas.getContext('2d');
+const svg=document.getElementById('drawing'),status=document.getElementById('status');
+const regions=Array.from(svg.querySelectorAll('[data-region]'));
+const storeKey='my-happy-pups-demo-v1';
+let tool='pencil',strokes=[],fills={},redo=[],active=null,pointerId=null;
+function tell(message){status.textContent=message}
+function snapshot(){return JSON.stringify({strokes,fills})}
+function restore(value){const data=JSON.parse(value);strokes=data.strokes||[];fills=data.fills||{};render()}
+let history=[snapshot()],index=0;
+function commit(){history=history.slice(0,index+1);history.push(snapshot());index++;render()}
+function render(){
+ regions.forEach(el=>el.setAttribute('fill',fills[el.dataset.region]||'white'));
+ ctx.clearRect(0,0,W,H);
+ strokes.forEach(drawStroke);
+ document.getElementById('undo').disabled=index===0;
+ document.getElementById('redo').disabled=index>=history.length-1;
+}
+function drawStroke(s){
+ if(!s.points.length)return;
+ ctx.save();ctx.lineJoin='round';ctx.lineCap='round';
+ ctx.globalCompositeOperation=s.tool==='eraser'?'destination-out':'source-over';
+ ctx.strokeStyle=s.color;ctx.fillStyle=s.color;
+ ctx.globalAlpha=s.tool==='crayon'?.58:s.tool==='paint'?.68:1;
+ ctx.lineWidth=s.tool==='pencil'?Math.max(2,s.size*.42):s.tool==='marker'?s.size*1.5:s.tool==='paint'?s.size*1.8:s.size;
+ ctx.beginPath();ctx.moveTo(s.points[0][0],s.points[0][1]);
+ s.points.slice(1).forEach(p=>ctx.lineTo(p[0],p[1]));
+ if(s.points.length===1){ctx.arc(s.points[0][0],s.points[0][1],ctx.lineWidth/2,0,Math.PI*2);ctx.fill()}else ctx.stroke();
+ ctx.restore();
+}
+function point(e){const r=canvas.getBoundingClientRect();return [(e.clientX-r.left)*W/r.width,(e.clientY-r.top)*H/r.height]}
+function fillAt(p){
+ const hit=regions.slice().reverse().find(el=>{
+  if(el.tagName==='circle'){const cx=+el.getAttribute('cx'),cy=+el.getAttribute('cy'),r=+el.getAttribute('r');return Math.hypot(p[0]-cx,p[1]-cy)<=r}
+  const path=new Path2D(el.getAttribute('d'));return ctx.isPointInPath(path,p[0],p[1]);
+ });
+ if(!hit){tell('Tap inside a closed shape to fill it.');return}
+ const color=document.getElementById('color').value;
+ if(fills[hit.dataset.region]===color)return;
+ fills[hit.dataset.region]=color;commit();
+}
+canvas.addEventListener('pointerdown',e=>{
+ if(e.button!==0&&e.pointerType==='mouse')return;
+ const p=point(e);
+ if(tool==='fill'){fillAt(p);return}
+ pointerId=e.pointerId;canvas.setPointerCapture(pointerId);
+ active={tool,color:document.getElementById('color').value,size:+document.getElementById('size').value,points:[p]};
+ strokes.push(active);render();
+});
+canvas.addEventListener('pointermove',e=>{if(!active||e.pointerId!==pointerId)return;active.points.push(point(e));render()});
+function finish(e){if(!active||e.pointerId!==pointerId)return;active=null;pointerId=null;commit()}
+canvas.addEventListener('pointerup',finish);canvas.addEventListener('pointercancel',finish);
+document.querySelectorAll('[data-tool]').forEach(button=>button.addEventListener('click',()=>{
+ tool=button.dataset.tool;
+ document.querySelectorAll('[data-tool]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+ tell(tool==='fill'?'Tap a closed area to color it.':'Selected '+tool+'.');
+}));
+document.getElementById('undo').onclick=()=>{if(index>0)restore(history[--index])};
+document.getElementById('redo').onclick=()=>{if(index<history.length-1)restore(history[++index])};
+document.getElementById('clear').onclick=()=>{if(!confirm('Clear the current coloring? Saved versions will stay.'))return;strokes=[];fills={};commit();tell('Current coloring cleared.')};
+function getVersions(){try{return JSON.parse(localStorage.getItem(storeKey)||'[]')}catch{return []}}
+function gallery(){
+ const target=document.getElementById('gallery');target.replaceChildren();
+ const versions=getVersions();
+ if(!versions.length){target.textContent='No saved versions yet.';return}
+ versions.forEach((item,i)=>{
+  const button=document.createElement('button');button.textContent='Open: '+item.name+' ('+new Date(item.saved).toLocaleDateString()+')';
+  button.onclick=()=>{if(!confirm('Open this saved version? Unsaved changes to the current picture will be replaced.'))return;restore(item.data);history=[snapshot()];index=0;render();document.getElementById('name').value=item.name;tell('Opened '+item.name)};
+  target.append(button);
+ });
+}
+document.getElementById('save').onclick=()=>{
+ const name=document.getElementById('name').value.trim()||'Untitled artwork';
+ const versions=getVersions();versions.unshift({name,saved:Date.now(),data:snapshot()});
+ try{localStorage.setItem(storeKey,JSON.stringify(versions.slice(0,10)));gallery();tell('Saved '+name+' in this browser.')}catch{tell('Browser storage is full or unavailable. Please download your picture instead.')}
+};
+document.getElementById('download').onclick=async()=>{
+ try{
+  const out=document.createElement('canvas');out.width=W;out.height=H;const c=out.getContext('2d');
+  const source=new XMLSerializer().serializeToString(svg);
+  const url=URL.createObjectURL(new Blob([source],{type:'image/svg+xml'}));
+  const img=new Image();
+  try{
+   await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url});
+   c.drawImage(img,0,0,W,H);
+  }finally{URL.revokeObjectURL(url)}
+  c.drawImage(canvas,0,0);
+  const link=document.createElement('a');link.href=out.toDataURL('image/png');link.download='my-happy-pups-coloring.png';link.click();
+  tell('PNG download started.');
+ }catch{tell('Could not create the PNG on this device.')}
+};
+render();gallery();
+</script></body></html>
