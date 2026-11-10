@@ -49,7 +49,8 @@
 'use strict';
 const W=800,H=600,canvas=document.getElementById('paint'),ctx=canvas.getContext('2d');
 const svg=document.getElementById('drawing'),status=document.getElementById('status');
-const regions=Array.from(svg.querySelectorAll('[data-region]'));\nconst outlines=svg.cloneNode(true);outlines.removeAttribute('id');outlines.classList.add('outlines');outlines.querySelectorAll('[data-region]').forEach(el=>el.setAttribute('fill','none'));outlines.querySelector('rect').setAttribute('fill','none');document.getElementById('artwork').append(outlines);
+const regions=Array.from(svg.querySelectorAll('[data-region]');
+const outlines=svg.cloneNode(true);outlines.removeAttribute('id');outlines.classList.add('outlines');outlines.querySelectorAll('[data-region]').forEach(el=>el.setAttribute('fill','none'));outlines.querySelector('rect').setAttribute('fill','none');document.getElementById('artwork').append(outlines);
 const storeKey='my-happy-pups-demo-v1';
 let tool='pencil',strokes=[],fills={},redo=[],active=null,pointerId=null;
 function tell(message){status.textContent=message}
