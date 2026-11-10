@@ -3,7 +3,7 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>My Happy Pups | Coloring Studio Prototype</title>
 <style>
-:root{font-family:system-ui,sans-serif;color:#172c3d;background:#fff7e8}*{box-sizing:border-box}body{margin:0;padding:16px}main{max-width:940px;margin:auto}h1{margin:.3em 0}p{line-height:1.5}a{color:#075d73}button,select,input{font:inherit}button,.download{border:2px solid #176b76;background:white;color:#173443;border-radius:12px;padding:9px 13px;min-height:44px;font-weight:750;cursor:pointer}button[aria-pressed=true]{background:#a7edf0}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #b04427;outline-offset:2px}.panel{background:white;border:2px solid #3e969c;border-radius:18px;padding:12px;margin:14px 0}.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.tools label{font-weight:750;display:flex;align-items:center;gap:8px}.artwork{width:100%;max-width:800px;aspect-ratio:4/3;position:relative;margin:auto;border:3px solid #1d5867;border-radius:12px;overflow:hidden;background:#fff;touch-action:none}.artwork svg,.artwork canvas{position:absolute;inset:0;width:100%;height:100%}.artwork svg{pointer-events:none}.artwork canvas{touch-action:none}.hint{font-size:.92rem;color:#365465}.status{min-height:1.5em;font-weight:750}.gallery{display:flex;flex-wrap:wrap;gap:8px}.gallery button{font-weight:600}.swatch{width:42px;height:42px;padding:3px}input[type=color]{height:44px;width:54px}input[type=range]{max-width:110px}svg path,svg circle{stroke:#192b36;stroke-width:6;stroke-linejoin:round;stroke-linecap:round}svg text{font-family:system-ui,sans-serif;font-weight:800;fill:#192b36}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+:root{font-family:system-ui,sans-serif;color:#172c3d;background:#fff7e8}*{box-sizing:border-box}body{margin:0;padding:16px}main{max-width:940px;margin:auto}h1{margin:.3em 0}p{line-height:1.5}a{color:#075d73}button,select,input{font:inherit}button,.download{border:2px solid #176b76;background:white;color:#173443;border-radius:12px;padding:9px 13px;min-height:44px;font-weight:750;cursor:pointer}button[aria-pressed=true]{background:#a7edf0}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #b04427;outline-offset:2px}.panel{background:white;border:2px solid #3e969c;border-radius:18px;padding:12px;margin:14px 0}.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.tools label{font-weight:750;display:flex;align-items:center;gap:8px}.artwork{width:100%;max-width:800px;aspect-ratio:4/3;position:relative;margin:auto;border:3px solid #1d5867;border-radius:12px;overflow:hidden;background:#fff;touch-action:none}.artwork svg,.artwork canvas{position:absolute;inset:0;width:100%;height:100%}.artwork svg{pointer-events:none}.artwork canvas{z-index:2}.artwork svg.outlines{z-index:3}.artwork canvas{touch-action:none}.hint{font-size:.92rem;color:#365465}.status{min-height:1.5em;font-weight:750}.gallery{display:flex;flex-wrap:wrap;gap:8px}.gallery button{font-weight:600}.swatch{width:42px;height:42px;padding:3px}input[type=color]{height:44px;width:54px}input[type=range]{max-width:110px}svg path,svg circle{stroke:#192b36;stroke-width:6;stroke-linejoin:round;stroke-linecap:round}svg text{font-family:system-ui,sans-serif;font-weight:800;fill:#192b36}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 </style></head>
 <body><main>
 <a href="./index.html">← Back to Pup's Journal</a>
@@ -49,7 +49,7 @@
 'use strict';
 const W=800,H=600,canvas=document.getElementById('paint'),ctx=canvas.getContext('2d');
 const svg=document.getElementById('drawing'),status=document.getElementById('status');
-const regions=Array.from(svg.querySelectorAll('[data-region]'));
+const regions=Array.from(svg.querySelectorAll('[data-region]'));\nconst outlines=svg.cloneNode(true);outlines.removeAttribute('id');outlines.classList.add('outlines');outlines.querySelectorAll('[data-region]').forEach(el=>el.setAttribute('fill','none'));outlines.querySelector('rect').setAttribute('fill','none');document.getElementById('artwork').append(outlines);
 const storeKey='my-happy-pups-demo-v1';
 let tool='pencil',strokes=[],fills={},redo=[],active=null,pointerId=null;
 function tell(message){status.textContent=message}
@@ -132,7 +132,7 @@ document.getElementById('download').onclick=async()=>{
    await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url});
    c.drawImage(img,0,0,W,H);
   }finally{URL.revokeObjectURL(url)}
-  c.drawImage(canvas,0,0);
+  c.drawImage(canvas,0,0);const outlineImage=new Image();const outlineUrl=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(outlines)],{type:'image/svg+xml'}));try{await new Promise((resolve,reject)=>{outlineImage.onload=resolve;outlineImage.onerror=reject;outlineImage.src=outlineUrl});c.drawImage(outlineImage,0,0,W,H)}finally{URL.revokeObjectURL(outlineUrl)}
   const link=document.createElement('a');link.href=out.toDataURL('image/png');link.download='my-happy-pups-coloring.png';link.click();
   tell('PNG download started.');
  }catch{tell('Could not create the PNG on this device.')}
