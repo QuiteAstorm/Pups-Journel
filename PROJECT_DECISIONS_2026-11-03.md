@@ -29,3 +29,6 @@ Compact flip cards; comments openly on back; visually distinguish original comme
 Pup's Journal records coding explanations, decisions, planning, merged PRs, unresolved issues. Chat decisions are **not** automatically code changes, merged PRs, or deployed features. Cross-check decisions before changing another program; avoid duplicating or contradicting plans; verify merges and live deployment; never mark unverified features complete.
 
 **Goal:** one connected dog-centered organization with coordinated programs and reliable records.
+
+
+> **November 4 update:** The sanctuary-centered structure and leadership pay planning have been clarified. See `REGULATIONS_AND_ACCOUNTABILITY_2026-11-04.md` for the newer controlling planning notes. Neither compensation target is an adopted policy.
